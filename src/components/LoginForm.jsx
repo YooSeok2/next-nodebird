@@ -3,8 +3,9 @@ import React, { useCallback, useMemo } from 'react';
 import styled from 'styled-components';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import PropTypes from 'prop-types';
+import { loginAction } from 'reducers/user';
 import useInput from 'hooks/useInput';
+import { useDispatch } from 'react-redux';
 
 const StyledForm = styled(Form)`
     margin-top: 20px;
@@ -14,14 +15,14 @@ const StyledButton = styled(Button)`
     width: 100%
 `;
 
-const LoginForm = ({ setIsLogined }) => {
+const LoginForm = () => {
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
-
+    const dispatch = useDispatch();
     const iconStyle = useMemo(() => ({ color: '#999' }), []);
 
     const onSubmitForm = useCallback(() => {
-        setIsLogined(true);
+        dispatch(loginAction({ id, password }));
     }, [id, password]);
 
     return (
@@ -54,8 +55,6 @@ const LoginForm = ({ setIsLogined }) => {
     );
 };
 
-LoginForm.prototype = {
-    setIsLogined: PropTypes.func
-};
+
 
 export default LoginForm;

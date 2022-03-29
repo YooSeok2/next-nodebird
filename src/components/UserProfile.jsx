@@ -1,8 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import { LoginOutlined } from '@ant-design/icons';
-import PropTypes from 'prop-types';
+import { logoutAction } from 'reducers/user';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
 
 const { Meta } = Card;
 
@@ -14,11 +15,12 @@ const LogoutButton = styled(Button)`
     box-shadow:none;
 `;
 
-const UserProfile = ({ setIsLogined }) => {
+const UserProfile = () => {
     const cardStyle = useMemo(() => ({ width: 300 }), []);
+    const dispatch = useDispatch();
 
     const onLogout = useCallback(() => {
-        setIsLogined(false);
+        dispatch(logoutAction);
     }, []);
 
     return (
@@ -38,10 +40,6 @@ const UserProfile = ({ setIsLogined }) => {
             />
         </Card>
     );
-};
-
-UserProfile.prototype = {
-    setIsLogined: PropTypes.func
 };
 
 export default UserProfile;
