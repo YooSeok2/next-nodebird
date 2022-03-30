@@ -27,6 +27,32 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.slick-slide{
+  display:inline-block;
+}
+
+.ant-row{
+  margin-right:0 !important;
+  margin-left:0 !important;
+}
+
+.ant-col:first-child{
+  padding-left: 0 !important;
+}
+
+.ant-col:last-child{
+  padding-right:0 !important;
+}
+
+.ant-card-cover{
+  transform:none !important;
+}
+
+.slick-track{
+  display: flex;
+  align-items:center;
+}
 `;
 
 export default GlobalStyle;

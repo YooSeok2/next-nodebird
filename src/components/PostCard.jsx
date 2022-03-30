@@ -1,14 +1,15 @@
 import { EllipsisOutlined, HeartOutlined, HeartTwoTone, MessageOutlined, RetweetOutlined } from '@ant-design/icons';
-import { Card, Popover, Button, Avatar } from 'antd';
+import { Card, Popover, Button, Avatar, List, Comment } from 'antd';
 import PropsTypes from 'prop-types';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 import PostImages from './PostImages';
+import CommentForm from './CommentForm';
+import PostCardContent from './PostCardContent';
 
 const PostCard = ({ post }) => {
-    const id = useSelector((state) => state.user.id?.id);
-    const isLogined = useSelector((state) => state.user.isLogined);
-    console.log(id, isLogined);
+    // const id = useSelector((state) => state.user.id?.id);
+    const isLogined = useSelector((state) => state.user.isLogined ? state.user.isLogined : null);
     const [liked, setLiked] = useState(false);
     const [commentFormOpend, setCommentFormOpend] = useState(false);
 
@@ -55,21 +56,35 @@ const PostCard = ({ post }) => {
                 <Card.Meta
                     title= {post.User.nickname}
                     avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-                    description={post.content}
+                    description={<PostCardContent postData={post.content} />}
                 />
             </Card>
             {commentFormOpend && (
                 <div>
-                    댓글 부분
+                    <CommentForm post={post}/>
+                    <List
+                        header ={`${post.Comment.length}개의 댓글`}
+                        itemLayout='horizontal'
+                        dataSource={post.Comments}
+                        renderItem ={(item) => {
+                            <li>
+                                <Comment
+                                    author={item.User.nickname}
+                                    avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
+                                    content = {item.content}
+                                />
+                            </li>;
+                        }}
+                    >
+
+                    </List>
                 </div>
             )}
-            {/* <CommentForm/>
-            <Comments /> */}
         </div>
     );
 };
 
-PostCard.prototype = {
+PostCard.propTypes = {
     post: PropsTypes.shape({
         id: PropsTypes.number,
         User: PropsTypes.object,

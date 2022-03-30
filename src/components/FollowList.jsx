@@ -19,7 +19,6 @@ const StyleListItem = styled(List.Item)`
 
 const FollowList = ({ header, data }) => {
     const listGridOpt = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }), []);
-    console.log(data);
     return (
         <StyleList
             grid={listGridOpt}
@@ -39,7 +38,7 @@ const FollowList = ({ header, data }) => {
     );
 };
 
-FollowList.prototype = {
+FollowList.propTypes = {
     header: PropTypes.string.isRequired,
     data: PropTypes.array.isRequired
 };
