@@ -1,98 +1,101 @@
-import React, { useCallback } from 'react';
-import AppLayout from 'components/AppLayout';
+import React, { useCallback, useState, useEffect } from 'react';
+import { Button, Checkbox, Form, Input } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import Router from 'next/router';
 import Head from 'next/head';
-import styled from 'styled-components';
-import { Form, Input, Button } from 'antd';
-import { InfoCircleOutlined } from '@ant-design/icons';
-import useInput from 'hooks/useInput';
 
-const StyledButton = styled(Button)`
-    width: 100%
-`;
+import { SIGN_UP_REQUEST } from '../reducers/user';
+import AppLayout from '../components/AppLayout';
+import useInput from '../hooks/useInput';
 
 const Signup = () => {
-    const [id, onChangeId] = useInput('');
-    const [nickname, onChangeNickname] = useInput('');
-    const [password, onChangePassword] = useInput('');
-    const [confirmPassword, onChangeConfirmPassword] = useInput('');
+    const [passwordCheck, setPasswordCheck] = useState('');
+    const [term, setTerm] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [termError, setTermError] = useState(false);
 
-    const getFormRules = useCallback((msg, validate) => {
-        const rules = [];
-        rules.push({
-            required: true,
-            message: msg
-        });
-        if (validate) {
-            rules.push(({ getFieldValue }) => ({
-                validator (_, value) {
-                    if (!value || getFieldValue('password') === value) {
-                        return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('비밀번호와 일치하지 않습니다.'));
-                }
-            }));
+    const [email, onChangeEmail] = useInput('');
+    const [nick, onChangeNick] = useInput('');
+    const [password, onChangePassword] = useInput('');
+    const dispatch = useDispatch();
+    const { isSigningUp, me } = useSelector((state) => state.user);
+
+    useEffect(() => {
+        if (me) {
+            alert('로그인했으니 메인페이지로 이동합니다.');
+            Router.push('/');
         }
-        return rules;
-    }, []);
+    }, [me && me.id]);
 
     const onSubmit = useCallback(() => {
-        console.log('submit');
-    }, []) ;
+        if (password !== passwordCheck) {
+            return setPasswordError(true);
+        }
+        if (!term) {
+            return setTermError(true);
+        }
+        return dispatch({
+            type: SIGN_UP_REQUEST,
+            data: {
+                email,
+                password,
+                nick
+            }
+        });
+    }, [email, password, passwordCheck, term]);
+
+    const onChangePasswordCheck = useCallback((e) => {
+        setPasswordError(e.target.value !== password);
+        setPasswordCheck(e.target.value);
+    }, [password]);
+
+    const onChangeTerm = useCallback((e) => {
+        setTermError(false);
+        setTerm(e.target.checked);
+    }, []);
 
     return (
-        <>
+        <AppLayout>
             <Head>
-                <title>회원가입 || NodeBird</title>
+                <title>회원가입 | NodeBird</title>
             </Head>
-            <AppLayout>
-                <Form onFinish={onSubmit} layout="vertical">
-                    <Form.Item
-                        label="아이디"
-                        name="id"
-                        tooltip={{ title: '필수', icon: <InfoCircleOutlined /> }}
-                        rules={getFormRules('아이디는 필수 입력 칸입니다.', false)}
-                    >
-                        <Input value={id} onChange={onChangeId} />
-                    </Form.Item>
-                    <Form.Item
-                        label="닉네임"
-                        name="nickname"
-                        tooltip={{ title: '필수', icon: <InfoCircleOutlined /> }}
-                        rules={getFormRules('닉네임은 필수 입력 칸입니다.', false)}
-                    >
-                        <Input name='user-nickname' value={nickname} onChange={onChangeNickname} />
-                    </Form.Item>
-                    <Form.Item
-                        name="password"
-                        label="비밀번호"
-                        hasFeedback
-                        tooltip={{ title: '필수', icon: <InfoCircleOutlined /> }}
-                        rules={getFormRules('비밀번호는 필수 입력 칸입니다.', false)}
-                    >
-                        <Input.Password value={password} onChange={onChangePassword} />
-                    </Form.Item>
-                    <Form.Item
-                        name="confirmPassword"
-                        label="비밀번호 확인"
-                        dependencies={['password']}
-                        hasFeedback
-                        tooltip={{ title: '필수', icon: <InfoCircleOutlined /> }}
-                        rules={getFormRules('비밀번호와 똑같이 입력해주세요.', true)}
-                    >
-                        <Input.Password
-                            value={confirmPassword}
-                            onChange={onChangeConfirmPassword}
-                        />
-                    </Form.Item>
-                    <Form.Item >
-                        <StyledButton type="primary" htmlType="submit">
-                            회원가입
-                        </StyledButton>
-                    </Form.Item>
-                </Form>
-            </AppLayout>
-        </>
-
+            <Form onFinish={onSubmit} style={{ padding: 10 }}>
+                <div>
+                    <label htmlFor="user-email">아이디</label>
+                    <br />
+                    <Input name="user-email" value={email} required onChange={onChangeEmail} />
+                </div>
+                <div>
+                    <label htmlFor="user-nick">닉네임</label>
+                    <br />
+                    <Input name="user-nick" value={nick} required onChange={onChangeNick} />
+                </div>
+                <div>
+                    <label htmlFor="user-password">비밀번호</label>
+                    <br />
+                    <Input name="user-password" type="password" value={password} required onChange={onChangePassword} />
+                </div>
+                <div>
+                    <label htmlFor="user-password-check">비밀번호체크</label>
+                    <br />
+                    <Input
+                        name="user-password-check"
+                        type="password"
+                        value={passwordCheck}
+                        required
+                        onChange={onChangePasswordCheck}
+                    />
+                    {passwordError && <div style={{ color: 'red' }}>비밀번호가 일치하지 않습니다.</div>}
+                </div>
+                <div>
+                    <Checkbox name="user-term" checked={term} onChange={onChangeTerm}>제로초 말을 잘 들을 것을 동의합니다.</Checkbox>
+                    {termError && <div style={{ color: 'red' }}>약관에 동의하셔야 합니다.</div>}
+                </div>
+                <div style={{ marginTop: 10 }}>
+                    <Button type="primary" htmlType="submit" loading={isSigningUp}>가입하기</Button>
+                </div>
+            </Form>
+        </AppLayout>
     );
 };
 

@@ -1,42 +1,26 @@
-import React, { useMemo } from 'react';
 import { Button, Card, List } from 'antd';
-import styled from 'styled-components';
 import { StopOutlined } from '@ant-design/icons';
+import React from 'react';
 import PropTypes from 'prop-types';
 
-const LoadMore = styled.div`
-    textAlign: 'center';
-    margin: '10px 0';
-`;
-
-const StyleList = styled(List)`
-    marginBottom: 20px;
-`;
-
-const StyleListItem = styled(List.Item)`
-    marginTop: 20px;
-`;
-
-const FollowList = ({ header, data }) => {
-    const listGridOpt = useMemo(() => ({ gutter: 4, xs: 2, md: 3 }), []);
-    return (
-        <StyleList
-            grid={listGridOpt}
-            size="small"
-            header= {<div>{header}</div>}
-            loadMore={<LoadMore><Button>더 보기</Button></LoadMore>}
-            bordered
-            dataSource={data}
-            renderItem={(item) => (
-                <StyleListItem>
-                    <Card actions={[<StopOutlined key={stop} />]}>
-                        <Card.Meta description={item.nickname} />
-                    </Card>
-                </StyleListItem>
-            )}
-        />
-    );
-};
+const FollowList = ({ header, data }) => (
+    <List
+        style={{ marginBottom: '20px' }}
+        grid={{ gutter: 4, xs: 2, md: 3 }}
+        size="small"
+        header={<div>{header}</div>}
+        loadMore={<div style={{ textAlign: 'center', margin: '10px 0' }}><Button>더 보기</Button></div>}
+        bordered
+        dataSource={data}
+        renderItem={(item) => (
+            <List.Item style={{ marginTop: '20px' }}>
+                <Card actions={[<StopOutlined key="stop" />]}>
+                    <Card.Meta description={item.nickname} />
+                </Card>
+            </List.Item>
+        )}
+    />
+);
 
 FollowList.propTypes = {
     header: PropTypes.string.isRequired,

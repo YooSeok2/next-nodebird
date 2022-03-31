@@ -56,7 +56,9 @@ module.exports = {
         'no-plusplus': 1,
         'max-depth': [2, 3],
         'max-len': [1, 120],
-        'max-lines-per-function': [1, { "max": 100 }],
-        'max-params': [1, { "max": 4 }]
+        'max-lines-per-function': [1, { "max": 150 }],
+        'max-params': [1, { "max": 4 }],
+        'no-param-reassign': 'off',
+        '@next/next/no-img-element': 'off'
     }
 };

@@ -1,43 +1,32 @@
-import React, { useCallback, useMemo } from 'react';
-import { Card, Avatar, Button } from 'antd';
-import { LoginOutlined } from '@ant-design/icons';
-import { logoutAction } from 'reducers/user';
-import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { Avatar, Card, Button } from 'antd';
+import React, { useCallback } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
-const { Meta } = Card;
-
-const LogoutButton = styled(Button)`
-    width:100%;
-    border:none;
-    padding:0;
-    margin:0;
-    box-shadow:none;
-`;
+import { LOG_OUT_REQUEST } from '../reducers/user';
 
 const UserProfile = () => {
-    const cardStyle = useMemo(() => ({ width: 300 }), []);
+    const { me, logOutLoading } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const onLogout = useCallback(() => {
-        dispatch(logoutAction);
+        dispatch({
+            type: LOG_OUT_REQUEST
+        });
     }, []);
 
     return (
         <Card
-            style={cardStyle}
             actions={[
-                <LogoutButton onClick={onLogout} key="logout">
-                    <LoginOutlined/>
-                </LogoutButton>
-
+                <div key="twit">짹짹<br />{me.Posts.length}</div>,
+                <div key="following">팔로잉<br />{me.Followings.length}</div>,
+                <div key="follower">팔로워<br />{me.Followers.length}</div>
             ]}
         >
-            <Meta
-                avatar={<Avatar src="https://joeschmoe.io/api/v1/random" />}
-                title="yooggu"
-                description="This is the description"
+            <Card.Meta
+                avatar={<Avatar>{me.nickname[0]}</Avatar>}
+                title={me.nickname}
             />
+            <Button onClick={onLogout} loading={logOutLoading}>로그아웃</Button>
         </Card>
     );
 };

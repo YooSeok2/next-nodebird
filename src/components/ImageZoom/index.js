@@ -1,36 +1,39 @@
 import React, { useState } from 'react';
-import PropsType from 'prop-types';
-import Slider from 'react-slick';
-import { Overlay, Header, CloseBtn, ImgWrapper, Indicator, SlickWrapper } from './styles';
+import PropTypes from 'prop-types';
+import Slick from 'react-slick';
+import { Overlay, Header, CloseBtn, SlickWrapper, ImgWrapper, Indicator, Global } from './styles';
 
 const ImagesZoom = ({ images, onClose }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
+
     return (
         <Overlay>
+            <Global />
             <Header>
                 <h1>상세 이미지</h1>
-                <CloseBtn onClick={onClose}>X</CloseBtn>
+                <CloseBtn onClick={onClose} />
             </Header>
             <SlickWrapper>
                 <div>
-                    <Slider
+                    <Slick
                         initialSlide={0}
-                        afterChange={(slide) => setCurrentSlide(slide)}
-                        infinite={true}
+                        beforeChange={(slide, newSlide) => setCurrentSlide(newSlide)}
+                        infinite
                         arrows={false}
                         slidesToShow={1}
                         slidesToScroll={1}
                     >
-                        {images.map((image) => (
-                            <ImgWrapper key={image.src}>
-                                <img src={image.src} alt={image.src} />
+                        {images.map((v) => (
+                            <ImgWrapper key={v.src}>
+                                <img src={v.src} alt={v.src} />
                             </ImgWrapper>
                         ))}
-                    </Slider>
+                    </Slick>
                     <Indicator>
                         <div>
                             {currentSlide + 1}
-                            {' / '}
+                            {' '}
+              /
                             {images.length}
                         </div>
                     </Indicator>
@@ -41,8 +44,10 @@ const ImagesZoom = ({ images, onClose }) => {
 };
 
 ImagesZoom.propTypes = {
-    images: PropsType.arrayOf(PropsType.object).isRequired,
-    onClose: PropsType.func.isRequired
+    images: PropTypes.arrayOf(PropTypes.shape({
+        src: PropTypes.string
+    })).isRequired,
+    onClose: PropTypes.func.isRequired
 };
 
 export default ImagesZoom;
