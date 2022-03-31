@@ -9,7 +9,7 @@ import Link from 'next/link';
 import CommentForm from './CommentForm';
 import PostCardContent from './PostCardContent';
 import PostImages from './PostImages';
-// import FollowButton from './FollowButton';
+import FollowButton from './FollowButton';
 import { REMOVE_POST_REQUEST } from '../reducers/post';
 
 const CardWrapper = styled.div`
@@ -69,6 +69,7 @@ const PostCard = ({ post }) => {
                         <EllipsisOutlined />
                     </Popover>
                 ]}
+                extra={post.User.id === id ? <></> : <FollowButton post={post} /> }
             >
                 <Card.Meta
                     avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
